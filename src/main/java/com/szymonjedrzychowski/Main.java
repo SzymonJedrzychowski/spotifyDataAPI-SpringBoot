@@ -44,8 +44,13 @@ public class Main {
     }
 
     @GetMapping("api/v1/songData")
-    public List<SongData> getSongCount(@RequestParam(required = false) Integer year, @RequestParam(required = false) Integer month) {
+    public List<SongData> getSongCount(@RequestParam(required = false) Integer year, @RequestParam(required = false) Integer month, @RequestParam(required = false) Integer artistId, @RequestParam(required = false) Integer songId) {
         if (year != null && month != null) {
+            if (songId != null) {
+                return recordRepository.findSongCountDailyBySong(year, month, songId);
+            } else if (artistId != null) {
+                return recordRepository.findSongCountDailyByAuthor(year, month, artistId);
+            }
             return recordRepository.findSongCountDaily(year, month);
         } else if (year != null) {
             return recordRepository.findSongCountWeekly(year);
