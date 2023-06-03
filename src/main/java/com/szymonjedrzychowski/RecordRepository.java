@@ -12,7 +12,7 @@ public interface RecordRepository extends JpaRepository<Record, Integer> {
 
     @Query("SELECT new com.szymonjedrzychowski.SongData(FUNCTION('YEAR', u.timePlayed) as year, FUNCTION('MONTH', u.timePlayed) as Month, sum(msPlayed) as timePlayed, count(*) as count) " +
             "from Record u " +
-            "where u.timePlayed > 30000 " +
+            "where u.msPlayed > 30000 " +
             "group by FUNCTION('YEAR', u.timePlayed), FUNCTION('MONTH', u.timePlayed)")
     List<SongData> findSongCountMonthly();
 
