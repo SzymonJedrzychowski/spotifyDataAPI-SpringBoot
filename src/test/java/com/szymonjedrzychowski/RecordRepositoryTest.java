@@ -76,7 +76,6 @@ class RecordRepositoryTest {
         List<SongData> expected = recordRepository.findSongCountMonthly();
 
         assertThat(expected).hasSize(2);
-        System.out.println(expected);
         assertThat(expected.get(0).getTimePlayed()).isEqualTo(150000);
     }
 
@@ -141,22 +140,16 @@ class RecordRepositoryTest {
 
     @Test
     void findSongCountWeeklyPositive() {
-        List<SongData> expected = recordRepository.findSongCountDailyBySong(2020, 3, 1);
+        List<SongData> expected = recordRepository.findSongCountWeekly(2020);
 
-        assertThat(expected).hasSize(2);
+        assertThat(expected).hasSize(3);
         assertThat(expected.get(0).getTimePlayed()).isEqualTo(100000);
     }
 
-    @Test
-    void findSongCountWeeklyNegativeSong() {
-        List<SongData> expected = recordRepository.findSongCountDailyBySong(2020, 3, 0);
-
-        assertThat(expected).hasSize(0);
-    }
 
     @Test
-    void findSongCountWeeklyNegativeDate() {
-        List<SongData> expected = recordRepository.findSongCountDailyBySong(2020, 5, 1);
+    void findSongCountWeeklyNegative() {
+        List<SongData> expected = recordRepository.findSongCountWeekly(2021);
 
         assertThat(expected).hasSize(0);
     }
