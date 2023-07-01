@@ -11,13 +11,15 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.sql.Date;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(SpringExtension.class)
 @WebMvcTest(Main.class)
@@ -84,11 +86,40 @@ class MainTest {
     }
 
     @Test
+    void getTopSongs() throws Exception {
+        List<SongData> expected = new ArrayList<>();
+        expected.add(new SongData("tittle2", "artist", (long) 300000, (long) 1));
+        expected.add(new SongData("tittle", "artist", (long) 150000, (long) 2));
+
+        when(main
+                .getTopSongs(Date.valueOf("2020-03-01"), Date.valueOf("2020-04-30")))
+                .thenReturn(expected);
+        mockMvc.perform(get("/api/v1/topSongs?startDate=1.03.2020&endDate=30.04.2020"))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.length()").value(2));
+    }
+
+    @Test
+    void getTopArtists() throws Exception {
+        List<ArtistData> expected = new ArrayList<>();
+        expected.add(new ArtistData("artist", (long) 450000, (long) 3));
+
+        when(main
+                .getTopArtists(Date.valueOf("2020-03-01"), Date.valueOf("2020-04-30")))
+                .thenReturn(expected);
+        mockMvc.perform(get("/api/v1/topArtists?startDate=1.03.2020&endDate=30.04.2020"))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.length()").value(1));
+    }
+
+    @Test
     void getRecordsSong() throws Exception {
         when(main
-                .getRecords(1, null))
+                .getRecords(Date.valueOf("2020-03-01"), Date.valueOf("2020-04-30"), 1, null))
                 .thenReturn(List.of(records.get(0), records.get(1)));
-        mockMvc.perform(get("/api/v1/records?songId=1"))
+        mockMvc.perform(get("/api/v1/records?startDate=1.03.2020&endDate=30.04.2020&songId=1"))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()").value(2));
@@ -97,9 +128,9 @@ class MainTest {
     @Test
     void getRecordsArtist() throws Exception {
         when(main
-                .getRecords(null, 1))
+                .getRecords(Date.valueOf("2020-03-01"), Date.valueOf("2020-04-30"), null, 1))
                 .thenReturn(records);
-        mockMvc.perform(get("/api/v1/records?artistId=1"))
+        mockMvc.perform(get("/api/v1/records?startDate=1.03.2020&endDate=30.04.2020&artistId=1"))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()").value(3));
@@ -108,76 +139,11 @@ class MainTest {
     @Test
     void getRecords() throws Exception {
         when(main
-                .getRecords(null, null))
+                .getRecords(Date.valueOf("2020-03-01"), Date.valueOf("2020-04-30"), null, null))
                 .thenReturn(records);
-        mockMvc.perform(get("/api/v1/records"))
+        mockMvc.perform(get("/api/v1/records?startDate=1.03.2020&endDate=30.04.2020"))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()").value(3));
-    }
-
-    @Test
-    void getSongCountDailySong() throws Exception {
-        List<SongData> songData = List.of(new SongData(2020, 3, 9, 1, (long) 100000, (long) 1), new SongData(2020, 3, 14, 30, (long) 50000, (long) 1));
-        when(main
-                .getSongCount(2020, 3, null, 1))
-                .thenReturn(songData);
-        mockMvc.perform(get("/api/v1/songData?year=2020&month=3&songId=1"))
-                .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.length()").value(2));
-
-    }
-
-    @Test
-    void getSongCountDailyArtist() throws Exception {
-        List<SongData> songData = List.of(new SongData(2020, 3, 9, 1, (long) 100000, (long) 1), new SongData(2020, 3, 14, 30, (long) 50000, (long) 1));
-        when(main
-                .getSongCount(2020, 3, 1, null))
-                .thenReturn(songData);
-        mockMvc.perform(get("/api/v1/songData?year=2020&month=3&artistId=1"))
-                .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.length()").value(2));
-
-    }
-
-    @Test
-    void getSongCountDaily() throws Exception {
-        List<SongData> songData = List.of(new SongData(2020, 3, 9, 1, (long) 100000, (long) 1), new SongData(2020, 3, 14, 30, (long) 50000, (long) 1));
-        when(main
-                .getSongCount(2020, 3, null, null))
-                .thenReturn(songData);
-        mockMvc.perform(get("/api/v1/songData?year=2020&month=3"))
-                .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.length()").value(2));
-
-    }
-
-    @Test
-    void getSongCountWeekly() throws Exception {
-        List<SongData> songData = List.of(new SongData(2020, 3, 9, (long) 100000, (long) 1), new SongData(2020, 3, 14, 30, (long) 50000, (long) 1), new SongData(2020, 4, 14, (long) 300000, (long) 1));
-        when(main
-                .getSongCount(2020, null, null, null))
-                .thenReturn(songData);
-        mockMvc.perform(get("/api/v1/songData?year=2020"))
-                .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.length()").value(3));
-
-    }
-
-    @Test
-    void getSongCountMonthly() throws Exception {
-        List<SongData> songData = List.of(new SongData(2020, 3, (long) 150000, (long) 2), new SongData(2020, 4, (long) 300000, (long) 1));
-        when(main
-                .getSongCount(null, null, null, null))
-                .thenReturn(songData);
-        mockMvc.perform(get("/api/v1/songData"))
-                .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.length()").value(2));
-
     }
 }

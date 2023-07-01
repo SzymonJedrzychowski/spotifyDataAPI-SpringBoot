@@ -11,7 +11,7 @@ import java.sql.Date;
 import java.util.HashSet;
 import java.util.List;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @DataJpaTest
 @ActiveProfiles("test")
@@ -44,113 +44,52 @@ class RecordRepositoryTest {
     }
 
     @Test
-    void findBySongSongIdPositive() {
-        List<Record> expected = recordRepository.findBySongSongId(1);
+    void findBySong() {
+        List<Record> expected = recordRepository.findBySong(Date.valueOf("2020-03-01"), Date.valueOf("2020-03-31"), 1);
 
         assertThat(expected).hasSize(2);
     }
 
     @Test
-    void findBySongSongIdNegative() {
-        List<Record> expected = recordRepository.findBySongSongId(0);
-
-        assertThat(expected).hasSize(0);
-    }
-
-    @Test
-    void findBySongArtistArtistIdPositive() {
-        List<Record> expected = recordRepository.findBySongArtistArtistId(1);
+    void findByArtist() {
+        List<Record> expected = recordRepository.findByArtist(Date.valueOf("2020-03-01"), Date.valueOf("2020-04-30"), 1);
 
         assertThat(expected).hasSize(3);
     }
 
     @Test
-    void findBySongArtistArtistIdNegative() {
-        List<Record> expected = recordRepository.findBySongArtistArtistId(0);
+    void findByDate() {
+        List<Record> expected = recordRepository.findByDate(Date.valueOf("2020-03-01"), Date.valueOf("2020-03-10"));
 
-        assertThat(expected).hasSize(0);
+        assertThat(expected).hasSize(1);
     }
 
     @Test
-    void findSongCountMonthly() {
-        List<SongData> expected = recordRepository.findSongCountMonthly();
+    void findTopByOrderByTimePlayedAsc() {
+        Record expected = recordRepository.findTopByOrderByTimePlayedAsc();
 
-        assertThat(expected).hasSize(2);
+        assertThat(expected.getRecordId()).isEqualTo(1);
+    }
+
+    @Test
+    void findTopByOrderByTimePlayedDesc() {
+        Record expected = recordRepository.findTopByOrderByTimePlayedDesc();
+
+        assertThat(expected.getRecordId()).isEqualTo(3);
+    }
+
+    @Test
+    void findTopSongs() {
+        List<SongData> expected = recordRepository.findTopSongs(Date.valueOf("2020-03-01"), Date.valueOf("2020-03-31"));
+
         assertThat(expected.get(0).getTimePlayed()).isEqualTo(150000);
     }
 
     @Test
-    void findSongCountDailyPositive() {
-        List<SongData> expected = recordRepository.findSongCountDaily(2020, 3);
+    void findTopArtists() {
+        List<ArtistData> expected = recordRepository.findTopArtists(Date.valueOf("2020-03-01"), Date.valueOf("2020-03-31"));
 
-        assertThat(expected).hasSize(2);
-        assertThat(expected.get(0).getTimePlayed()).isEqualTo(100000);
+        assertThat(expected.get(0).getTimePlayed()).isEqualTo(150000);
     }
 
-    @Test
-    void findSongCountDailyNegative() {
-        List<SongData> expected = recordRepository.findSongCountDaily(2020, 5);
-
-        assertThat(expected).hasSize(0);
-    }
-
-    @Test
-    void findSongCountDailyByAuthorPositive() {
-        List<SongData> expected = recordRepository.findSongCountDailyByAuthor(2020, 3, 1);
-
-        assertThat(expected).hasSize(2);
-        assertThat(expected.get(0).getTimePlayed()).isEqualTo(100000);
-    }
-
-    @Test
-    void findSongCountDailyByAuthorNegativeAuthor() {
-        List<SongData> expected = recordRepository.findSongCountDailyByAuthor(2020, 3, 0);
-
-        assertThat(expected).hasSize(0);
-    }
-
-    @Test
-    void findSongCountDailyByAuthorNegativeDate() {
-        List<SongData> expected = recordRepository.findSongCountDailyByAuthor(2020, 5, 1);
-
-        assertThat(expected).hasSize(0);
-    }
-
-    @Test
-    void findSongCountDailyBySongPositive() {
-        List<SongData> expected = recordRepository.findSongCountDailyBySong(2020, 3, 1);
-
-        assertThat(expected).hasSize(2);
-        assertThat(expected.get(0).getTimePlayed()).isEqualTo(100000);
-    }
-
-    @Test
-    void findSongCountDailyBySongNegativeSong() {
-        List<SongData> expected = recordRepository.findSongCountDailyBySong(2020, 3, 0);
-
-        assertThat(expected).hasSize(0);
-    }
-
-    @Test
-    void findSongCountDailyBySongNegativeDate() {
-        List<SongData> expected = recordRepository.findSongCountDailyBySong(2020, 5, 1);
-
-        assertThat(expected).hasSize(0);
-    }
-
-    @Test
-    void findSongCountWeeklyPositive() {
-        List<SongData> expected = recordRepository.findSongCountWeekly(2020);
-
-        assertThat(expected).hasSize(3);
-        assertThat(expected.get(0).getTimePlayed()).isEqualTo(100000);
-    }
-
-
-    @Test
-    void findSongCountWeeklyNegative() {
-        List<SongData> expected = recordRepository.findSongCountWeekly(2021);
-
-        assertThat(expected).hasSize(0);
-    }
 }

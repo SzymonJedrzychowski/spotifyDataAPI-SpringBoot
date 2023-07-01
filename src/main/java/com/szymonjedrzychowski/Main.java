@@ -2,12 +2,17 @@ package com.szymonjedrzychowski;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 @SpringBootApplication
 @RestController
+@RequestMapping("api/v1/")
+@CrossOrigin(origins = "*")
 public class Main {
     private final ArtistRepository artistRepository;
     private final SongRepository songRepository;
@@ -23,38 +28,38 @@ public class Main {
         SpringApplication.run(Main.class, args);
     }
 
-    @GetMapping("api/v1/artists")
+    @GetMapping("/artists")
     public List<Artist> getArtists() {
         return artistRepository.findAll();
     }
 
-    @GetMapping("api/v1/songs")
+    @GetMapping("/songs")
     public List<Song> getSongs() {
         return songRepository.findAll();
     }
 
-    @GetMapping("api/v1/records")
-    public List<Record> getRecords(@RequestParam(required = false) Integer songId, @RequestParam(required = false) Integer artistId) {
-        if (songId != null) {
-            return recordRepository.findBySongSongId(songId);
-        } else if (artistId != null) {
-            return recordRepository.findBySongArtistArtistId(artistId);
-        }
-        return recordRepository.findAll();
+    @GetMapping("/topArtists")
+    public List<ArtistData> getTopArtists(@RequestParam @DateTimeFormat(pattern = "dd.MM.yyyy") Date startDate, @RequestParam @DateTimeFormat(pattern = "dd.MM.yyyy") Date endDate) {
+        return recordRepository.findTopArtists(startDate, endDate);
     }
 
-    @GetMapping("api/v1/songData")
-    public List<SongData> getSongCount(@RequestParam(required = false) Integer year, @RequestParam(required = false) Integer month, @RequestParam(required = false) Integer artistId, @RequestParam(required = false) Integer songId) {
-        if (year != null && month != null) {
-            if (songId != null) {
-                return recordRepository.findSongCountDailyBySong(year, month, songId);
-            } else if (artistId != null) {
-                return recordRepository.findSongCountDailyByAuthor(year, month, artistId);
-            }
-            return recordRepository.findSongCountDaily(year, month);
-        } else if (year != null) {
-            return recordRepository.findSongCountWeekly(year);
+    @GetMapping("/topSongs")
+    public List<SongData> getTopSongs(@RequestParam @DateTimeFormat(pattern = "dd.MM.yyyy") Date startDate, @RequestParam @DateTimeFormat(pattern = "dd.MM.yyyy") Date endDate) {
+        return recordRepository.findTopSongs(startDate, endDate);
+    }
+
+    @GetMapping("/edgeDates")
+    public List<Record> getEdgeDates(){
+        return Arrays.asList(recordRepository.findTopByOrderByTimePlayedAsc(), recordRepository.findTopByOrderByTimePlayedDesc());
+    }
+
+    @GetMapping("/records")
+    public List<Record> getRecords(@RequestParam @DateTimeFormat(pattern = "dd.MM.yyyy") Date startDate, @RequestParam @DateTimeFormat(pattern = "dd.MM.yyyy") Date endDate, @RequestParam(required = false) Integer songId, @RequestParam(required = false) Integer artistId) {
+        if (songId != null) {
+            return recordRepository.findBySong(startDate, endDate, songId);
+        } else if (artistId != null) {
+            return recordRepository.findByArtist(startDate, endDate, artistId);
         }
-        return recordRepository.findSongCountMonthly();
+        return recordRepository.findByDate(startDate, endDate);
     }
 }
