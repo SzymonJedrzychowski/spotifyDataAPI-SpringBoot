@@ -3,43 +3,33 @@ package com.szymonjedrzychowski;
 import java.util.Objects;
 
 public class SongData {
-    private String title;
-    private String artistName;
-    private Long timePlayed;
+    private Integer SongId;
+    private Long msPlayed;
     private Long count;
 
-    public SongData(String title, String artistName, Long timePlayed, Long count) {
-        this.title = title;
-        this.artistName = artistName;
-        this.timePlayed = timePlayed;
+    public SongData(Integer songId, Long msPlayed, Long count) {
+        SongId = songId;
+        this.msPlayed = msPlayed;
         this.count = count;
     }
 
     public SongData() {
     }
 
-    public String getTitle() {
-        return title;
+    public Integer getSongId() {
+        return SongId;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
+    public void setSongId(Integer songId) {
+        SongId = songId;
     }
 
-    public String getArtistName() {
-        return artistName;
+    public Long getMsPlayed() {
+        return msPlayed;
     }
 
-    public void setArtistName(String artistName) {
-        this.artistName = artistName;
-    }
-
-    public Long getTimePlayed() {
-        return timePlayed;
-    }
-
-    public void setTimePlayed(Long timePlayed) {
-        this.timePlayed = timePlayed;
+    public void setMsPlayed(Long msPlayed) {
+        this.msPlayed = msPlayed;
     }
 
     public Long getCount() {
@@ -55,20 +45,19 @@ public class SongData {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         SongData songData = (SongData) o;
-        return Objects.equals(title, songData.title) && Objects.equals(artistName, songData.artistName) && Objects.equals(timePlayed, songData.timePlayed) && Objects.equals(count, songData.count);
+        return Objects.equals(SongId, songData.SongId) && Objects.equals(msPlayed, songData.msPlayed) && Objects.equals(count, songData.count);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(title, artistName, timePlayed, count);
+        return Objects.hash(SongId, msPlayed, count);
     }
 
     @Override
     public String toString() {
         return "SongData{" +
-                "title='" + title + '\'' +
-                ", artistName='" + artistName + '\'' +
-                ", timePlayed=" + timePlayed +
+                "SongId=" + SongId +
+                ", msPlayed=" + msPlayed +
                 ", count=" + count +
                 '}';
     }

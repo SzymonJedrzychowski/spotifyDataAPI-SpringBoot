@@ -3,7 +3,7 @@ package com.szymonjedrzychowski;
 import jakarta.persistence.*;
 import org.springframework.format.annotation.DateTimeFormat;
 
-import java.util.Date;
+import java.time.Instant;
 import java.util.Objects;
 
 @Entity
@@ -19,16 +19,19 @@ public class Record {
     )
     @Column(name = "record_id", nullable = false)
     private Integer recordId;
+
     @ManyToOne
     @JoinColumn(name = "song_id", nullable = false)
     private Song song;
+
     @Column(name = "ms_played", nullable = false)
     private Integer msPlayed;
+
     @Column(name = "time_played", nullable = false)
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    private Date timePlayed;
+    private Instant timePlayed;
 
-    public Record(Integer recordId, Song song, Integer msPlayed, Date timePlayed) {
+    public Record(Integer recordId, Song song, Integer msPlayed, Instant timePlayed) {
         this.recordId = recordId;
         this.song = song;
         this.msPlayed = msPlayed;
@@ -62,11 +65,11 @@ public class Record {
         this.msPlayed = msPlayed;
     }
 
-    public Date getTimePlayed() {
+    public Instant getTimePlayed() {
         return timePlayed;
     }
 
-    public void setTimePlayed(Date timePlayed) {
+    public void setTimePlayed(Instant timePlayed) {
         this.timePlayed = timePlayed;
     }
 

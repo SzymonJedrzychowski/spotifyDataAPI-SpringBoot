@@ -5,8 +5,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.Instant;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 
 @SpringBootApplication
@@ -34,27 +34,27 @@ public class Main {
     }
 
     @GetMapping("/songs")
-    public List<Song> getSongs() {
-        return songRepository.findAll();
+    public List<SongInformation> getSongs() {
+        return songRepository.findAllSongs();
     }
 
     @GetMapping("/topArtists")
-    public List<ArtistData> getTopArtists(@RequestParam @DateTimeFormat(pattern = "dd.MM.yyyy") Date startDate, @RequestParam @DateTimeFormat(pattern = "dd.MM.yyyy") Date endDate) {
+    public List<ArtistData> getTopArtists(@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) Instant startDate, @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) Instant endDate) {
         return recordRepository.findTopArtists(startDate, endDate);
     }
 
     @GetMapping("/topSongs")
-    public List<SongData> getTopSongs(@RequestParam @DateTimeFormat(pattern = "dd.MM.yyyy") Date startDate, @RequestParam @DateTimeFormat(pattern = "dd.MM.yyyy") Date endDate) {
+    public List<SongData> getTopSongs(@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) Instant startDate, @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) Instant endDate) {
         return recordRepository.findTopSongs(startDate, endDate);
     }
 
-    @GetMapping("/edgeDates")
-    public List<Record> getEdgeDates(){
-        return Arrays.asList(recordRepository.findTopByOrderByTimePlayedAsc(), recordRepository.findTopByOrderByTimePlayedDesc());
+    @GetMapping("/edgeRecords")
+    public List<RecordData> getEdgeRecords() {
+        return Arrays.asList(recordRepository.findFirstEntry(), recordRepository.findLastEntry());
     }
 
     @GetMapping("/records")
-    public List<Record> getRecords(@RequestParam @DateTimeFormat(pattern = "dd.MM.yyyy") Date startDate, @RequestParam @DateTimeFormat(pattern = "dd.MM.yyyy") Date endDate, @RequestParam(required = false) Integer songId, @RequestParam(required = false) Integer artistId) {
+    public List<RecordData> getRecords(@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) Instant startDate, @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) Instant endDate, @RequestParam(required = false) Integer songId, @RequestParam(required = false) Integer artistId) {
         if (songId != null) {
             return recordRepository.findBySong(startDate, endDate, songId);
         } else if (artistId != null) {

@@ -3,40 +3,48 @@ package com.szymonjedrzychowski;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
-import java.util.Date;
+import java.time.Instant;
 import java.util.List;
 
 public interface RecordRepository extends JpaRepository<Record, Integer> {
-    @Query("SELECT u " +
-            "from Record u " +
-            "where u.timePlayed >= ?1 and u.timePlayed <= ?2 and u.song.songId = ?3")
-    List<Record> findBySong(Date startDate, Date endDate, Integer songId);
+    @Query("SELECT new com.szymonjedrzychowski.RecordData(song.songId, msPlayed, timePlayed) " +
+            "FROM Record u " +
+            "WHERE timePlayed >= ?1 AND timePlayed <= ?2 AND song.songId = ?3")
+    List<RecordData> findBySong(Instant startDate, Instant endDate, Integer songId);
 
-    @Query("SELECT u " +
-            "from Record u " +
-            "where u.timePlayed >= ?1 and u.timePlayed <= ?2 and u.song.artist.artistId = ?3")
-    List<Record> findByArtist(Date startDate, Date endDate, Integer artistId);
+    @Query("SELECT new com.szymonjedrzychowski.RecordData(song.songId, msPlayed, timePlayed) " +
+            "FROM Record u " +
+            "WHERE timePlayed >= ?1 AND timePlayed <= ?2 AND song.artist.artistId = ?3")
+    List<RecordData> findByArtist(Instant startDate, Instant endDate, Integer artistId);
 
-    @Query("SELECT u " +
-            "from Record u " +
-            "where u.timePlayed >= ?1 and u.timePlayed <= ?2")
-    List<Record> findByDate(Date startDate, Date endDate);
+    @Query("SELECT new com.szymonjedrzychowski.RecordData(song.songId, msPlayed, timePlayed) " +
+            "FROM Record u " +
+            "WHERE timePlayed >= ?1 AND timePlayed <= ?2")
+    List<RecordData> findByDate(Instant startDate, Instant endDate);
 
-    Record findTopByOrderByTimePlayedAsc();
+    @Query("SELECT new com.szymonjedrzychowski.RecordData(song.songId, msPlayed, timePlayed) " +
+            "FROM Record u " +
+            "ORDER BY timePlayed ASC " +
+            "LIMIT 1")
+    RecordData findFirstEntry();
 
-    Record findTopByOrderByTimePlayedDesc();
+    @Query("SELECT new com.szymonjedrzychowski.RecordData(song.songId, msPlayed, timePlayed) " +
+            "FROM Record u " +
+            "ORDER BY timePlayed DESC " +
+            "LIMIT 1")
+    RecordData findLastEntry();
 
-    @Query("SELECT new com.szymonjedrzychowski.SongData(song.title, song.artist.name, sum(msPlayed) as timePlayed, count(*) as count) " +
-            "from Record u " +
-            "where u.timePlayed >= ?1 and u.timePlayed <= ?2 " +
-            "group by song.songId " +
-            "order by timePlayed DESC")
-    List<SongData> findTopSongs(Date startDate, Date endDate);
+    @Query("SELECT new com.szymonjedrzychowski.SongData(song.songId, sum(msPlayed) as msPlayed, count(*) as count) " +
+            "FROM Record u " +
+            "WHERE timePlayed >= ?1 AND timePlayed <= ?2 " +
+            "GROUP BY song.songId " +
+            "ORDER BY msPlayed DESC")
+    List<SongData> findTopSongs(Instant startDate, Instant endDate);
 
-    @Query("SELECT new com.szymonjedrzychowski.ArtistData(song.artist.name, sum(msPlayed) as timePlayed, count(*) as count) " +
-            "from Record u " +
-            "where u.timePlayed >= ?1 and u.timePlayed <= ?2 " +
-            "group by song.artist.artistId " +
-            "order by timePlayed DESC")
-    List<ArtistData> findTopArtists(Date startDate, Date endDate);
+    @Query("SELECT new com.szymonjedrzychowski.ArtistData(song.artist.artistId, sum(msPlayed) as msPlayed, count(*) as count) " +
+            "FROM Record u " +
+            "WHERE timePlayed >= ?1 AND timePlayed <= ?2 " +
+            "GROUP BY song.artist.artistId " +
+            "ORDER BY msPlayed DESC")
+    List<ArtistData> findTopArtists(Instant startDate, Instant endDate);
 }

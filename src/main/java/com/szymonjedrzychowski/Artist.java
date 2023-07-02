@@ -17,9 +17,11 @@ public class Artist {
             strategy = GenerationType.SEQUENCE,
             generator = "artist_id_sequence"
     )
-    @Column(name="artist_id", nullable = false)
+    @Column(name = "artist_id", nullable = false)
     private Integer artistId;
+
     private String name;
+    
     @OneToMany(mappedBy = "artist")
     @JsonIgnore
     private Set<Song> songSet;

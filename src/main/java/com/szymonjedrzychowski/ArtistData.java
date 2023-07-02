@@ -3,33 +3,33 @@ package com.szymonjedrzychowski;
 import java.util.Objects;
 
 public class ArtistData {
-    private String artistName;
-    private Long timePlayed;
+    private Integer artistId;
+    private Long msPlayed;
     private Long count;
 
-    public ArtistData(String artistName, Long timePlayed, Long count) {
-        this.artistName = artistName;
-        this.timePlayed = timePlayed;
+    public ArtistData(Integer artistId, Long msPlayed, Long count) {
+        this.artistId = artistId;
+        this.msPlayed = msPlayed;
         this.count = count;
     }
 
     public ArtistData() {
     }
 
-    public String getArtistName() {
-        return artistName;
+    public Integer getArtistId() {
+        return artistId;
     }
 
-    public void setArtistName(String artistName) {
-        this.artistName = artistName;
+    public void setArtistId(Integer artistId) {
+        this.artistId = artistId;
     }
 
-    public Long getTimePlayed() {
-        return timePlayed;
+    public Long getMsPlayed() {
+        return msPlayed;
     }
 
-    public void setTimePlayed(Long timePlayed) {
-        this.timePlayed = timePlayed;
+    public void setMsPlayed(Long msPlayed) {
+        this.msPlayed = msPlayed;
     }
 
     public Long getCount() {
@@ -45,19 +45,19 @@ public class ArtistData {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         ArtistData that = (ArtistData) o;
-        return Objects.equals(artistName, that.artistName) && Objects.equals(timePlayed, that.timePlayed) && Objects.equals(count, that.count);
+        return Objects.equals(artistId, that.artistId) && Objects.equals(msPlayed, that.msPlayed) && Objects.equals(count, that.count);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(artistName, timePlayed, count);
+        return Objects.hash(artistId, msPlayed, count);
     }
 
     @Override
     public String toString() {
         return "ArtistData{" +
-                "artistName='" + artistName + '\'' +
-                ", timePlayed=" + timePlayed +
+                "artistId=" + artistId +
+                ", msPlayed=" + msPlayed +
                 ", count=" + count +
                 '}';
     }

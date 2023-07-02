@@ -19,10 +19,13 @@ public class Song {
     )
     @Column(name = "song_id", nullable = false)
     private Integer songId;
+
     private String title;
+
     @ManyToOne
     @JoinColumn(name = "artist_id", nullable = false)
     private Artist artist;
+
     @OneToMany(mappedBy = "song")
     @JsonIgnore
     private Set<Record> recordSet;
