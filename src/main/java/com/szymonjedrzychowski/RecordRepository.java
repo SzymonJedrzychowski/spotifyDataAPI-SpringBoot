@@ -41,6 +41,13 @@ public interface RecordRepository extends JpaRepository<Record, Integer> {
             "ORDER BY msPlayed DESC")
     List<SongData> findTopSongs(Instant startDate, Instant endDate);
 
+    @Query("SELECT new com.szymonjedrzychowski.SongData(song.songId, sum(msPlayed) as msPlayed, count(*) as count) " +
+            "FROM Record u " +
+            "WHERE timePlayed >= ?1 AND timePlayed <= ?2 AND song.artist.artistId = ?3 " +
+            "GROUP BY song.songId " +
+            "ORDER BY msPlayed DESC")
+    List<SongData> findTopSongsByArtist(Instant startDate, Instant endDate, Integer artistId);
+
     @Query("SELECT new com.szymonjedrzychowski.ArtistData(song.artist.artistId, sum(msPlayed) as msPlayed, count(*) as count) " +
             "FROM Record u " +
             "WHERE timePlayed >= ?1 AND timePlayed <= ?2 " +

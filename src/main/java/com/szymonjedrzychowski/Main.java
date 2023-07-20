@@ -44,7 +44,10 @@ public class Main {
     }
 
     @GetMapping("/topSongs")
-    public List<SongData> getTopSongs(@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) Instant startDate, @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) Instant endDate) {
+    public List<SongData> getTopSongs(@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) Instant startDate, @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) Instant endDate, @RequestParam(required = false) Integer artistId) {
+        if (artistId != null) {
+            return recordRepository.findTopSongsByArtist(startDate, endDate, artistId);
+        }
         return recordRepository.findTopSongs(startDate, endDate);
     }
 

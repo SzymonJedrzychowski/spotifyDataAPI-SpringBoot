@@ -82,7 +82,7 @@ class RecordRepositoryTest {
     }
 
     @Test
-    void findTopByOrderByTimePlayedAsc() throws Exception {
+    void findFirstEntry() throws Exception {
         RecordData result = recordRepository.findFirstEntry();
 
         assertThat(
@@ -91,7 +91,7 @@ class RecordRepositoryTest {
     }
 
     @Test
-    void findTopByOrderByTimePlayedDesc() throws Exception {
+    void findLastEntry() throws Exception {
         RecordData result = recordRepository.findLastEntry();
 
         assertThat(
@@ -102,6 +102,15 @@ class RecordRepositoryTest {
     @Test
     void findTopSongs() throws Exception {
         List<SongData> result = recordRepository.findTopSongs(instantList.get(0), instantList.get(2));
+
+        assertThat(result).isEqualTo(List.of(
+                new SongData(1, (long) 150000, (long) 2)
+        ));
+    }
+
+    @Test
+    void findTopSongsByArtist() throws Exception {
+        List<SongData> result = recordRepository.findTopSongsByArtist(instantList.get(0), instantList.get(2), 1);
 
         assertThat(result).isEqualTo(List.of(
                 new SongData(1, (long) 150000, (long) 2)
