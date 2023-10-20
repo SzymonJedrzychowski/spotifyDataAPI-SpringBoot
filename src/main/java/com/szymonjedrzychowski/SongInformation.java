@@ -5,12 +5,12 @@ import java.util.Objects;
 public class SongInformation {
     private Integer songId;
     private String title;
-    private Integer artistId;
+    private String artist;
 
-    public SongInformation(Integer songId, String title, Integer artistId) {
+    public SongInformation(Integer songId, String title, String artist) {
         this.songId = songId;
         this.title = title;
-        this.artistId = artistId;
+        this.artist = artist;
     }
 
     public SongInformation() {
@@ -32,12 +32,12 @@ public class SongInformation {
         this.title = title;
     }
 
-    public Integer getArtistId() {
-        return artistId;
+    public String getArtist() {
+        return artist;
     }
 
-    public void setArtistId(Integer artistId) {
-        this.artistId = artistId;
+    public void setArtist(String artist) {
+        this.artist = artist;
     }
 
     @Override
@@ -45,12 +45,12 @@ public class SongInformation {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         SongInformation that = (SongInformation) o;
-        return Objects.equals(songId, that.songId) && Objects.equals(title, that.title) && Objects.equals(artistId, that.artistId);
+        return Objects.equals(songId, that.songId) && Objects.equals(title, that.title) && Objects.equals(artist, that.artist);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(songId, title, artistId);
+        return Objects.hash(songId, title, artist);
     }
 
     @Override
@@ -58,7 +58,7 @@ public class SongInformation {
         return "SongInformation{" +
                 "songId=" + songId +
                 ", title='" + title + '\'' +
-                ", artistId=" + artistId +
+                ", artist=" + artist +
                 '}';
     }
 }

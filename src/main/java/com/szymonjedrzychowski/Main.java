@@ -14,12 +14,10 @@ import java.util.List;
 @RequestMapping("api/v1/")
 @CrossOrigin(origins = "*")
 public class Main {
-    private final ArtistRepository artistRepository;
     private final SongRepository songRepository;
     private final RecordRepository recordRepository;
 
-    public Main(ArtistRepository artistRepository, SongRepository songRepository, RecordRepository recordRepository) {
-        this.artistRepository = artistRepository;
+    public Main(SongRepository songRepository, RecordRepository recordRepository) {
         this.songRepository = songRepository;
         this.recordRepository = recordRepository;
     }
@@ -29,8 +27,8 @@ public class Main {
     }
 
     @GetMapping("/artists")
-    public List<Artist> getArtists() {
-        return artistRepository.findAll();
+    public List<String> getArtists() {
+        return songRepository.findAllArtists();
     }
 
     @GetMapping("/songs")
@@ -44,9 +42,9 @@ public class Main {
     }
 
     @GetMapping("/topSongs")
-    public List<SongData> getTopSongs(@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) Instant startDate, @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) Instant endDate, @RequestParam(required = false) Integer artistId) {
-        if (artistId != null) {
-            return recordRepository.findTopSongsByArtist(startDate, endDate, artistId);
+    public List<SongData> getTopSongs(@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) Instant startDate, @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) Instant endDate, @RequestParam(required = false) String artist) {
+        if (artist != null) {
+            return recordRepository.findTopSongsByArtist(startDate, endDate, artist);
         }
         return recordRepository.findTopSongs(startDate, endDate);
     }
@@ -57,11 +55,11 @@ public class Main {
     }
 
     @GetMapping("/records")
-    public List<RecordData> getRecords(@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) Instant startDate, @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) Instant endDate, @RequestParam(required = false) Integer songId, @RequestParam(required = false) Integer artistId) {
+    public List<RecordData> getRecords(@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) Instant startDate, @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) Instant endDate, @RequestParam(required = false) Integer songId, @RequestParam(required = false) String artist) {
         if (songId != null) {
             return recordRepository.findBySong(startDate, endDate, songId);
-        } else if (artistId != null) {
-            return recordRepository.findByArtist(startDate, endDate, artistId);
+        } else if (artist != null) {
+            return recordRepository.findByArtist(startDate, endDate, artist);
         }
         return recordRepository.findByDate(startDate, endDate);
     }

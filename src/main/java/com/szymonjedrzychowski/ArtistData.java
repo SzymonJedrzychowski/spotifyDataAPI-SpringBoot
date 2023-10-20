@@ -3,12 +3,12 @@ package com.szymonjedrzychowski;
 import java.util.Objects;
 
 public class ArtistData {
-    private Integer artistId;
+    private String artist;
     private Long msPlayed;
     private Long count;
 
-    public ArtistData(Integer artistId, Long msPlayed, Long count) {
-        this.artistId = artistId;
+    public ArtistData(String artist, Long msPlayed, Long count) {
+        this.artist = artist;
         this.msPlayed = msPlayed;
         this.count = count;
     }
@@ -16,12 +16,12 @@ public class ArtistData {
     public ArtistData() {
     }
 
-    public Integer getArtistId() {
-        return artistId;
+    public String getArtist() {
+        return artist;
     }
 
-    public void setArtistId(Integer artistId) {
-        this.artistId = artistId;
+    public void setArtist(String artist) {
+        this.artist = artist;
     }
 
     public Long getMsPlayed() {
@@ -45,18 +45,18 @@ public class ArtistData {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         ArtistData that = (ArtistData) o;
-        return Objects.equals(artistId, that.artistId) && Objects.equals(msPlayed, that.msPlayed) && Objects.equals(count, that.count);
+        return Objects.equals(artist, that.artist) && Objects.equals(msPlayed, that.msPlayed) && Objects.equals(count, that.count);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(artistId, msPlayed, count);
+        return Objects.hash(artist, msPlayed, count);
     }
 
     @Override
     public String toString() {
         return "ArtistData{" +
-                "artistId=" + artistId +
+                "artist=" + artist +
                 ", msPlayed=" + msPlayed +
                 ", count=" + count +
                 '}';

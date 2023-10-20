@@ -27,23 +27,18 @@ class RecordRepositoryTest {
     );
 
     @Autowired
-    private ArtistRepository artistRepository;
-    @Autowired
     private RecordRepository recordRepository;
     @Autowired
     private SongRepository songRepository;
 
     @BeforeAll
-    void createDatabase() throws Exception {
-        Artist artist = new Artist(1, "artist", new HashSet<>());
-        Song song = new Song(1, "title", artist, new HashSet<>());
-        Song song2 = new Song(2, "title2", artist, new HashSet<>());
+    void createDatabase() {
+        Song song = new Song(1, "title", "artist", new HashSet<>());
+        Song song2 = new Song(2, "title2", "artist", new HashSet<>());
         Record record1 = new Record(1, song, 100000, instantList.get(0));
         Record record2 = new Record(2, song, 50000, instantList.get(1));
         Record record3 = new Record(3, song2, 300000, instantList.get(3));
 
-
-        artistRepository.save(artist);
         songRepository.save(song);
         songRepository.save(song2);
         recordRepository.save(record1);
@@ -52,7 +47,7 @@ class RecordRepositoryTest {
     }
 
     @Test
-    void findBySong() throws Exception {
+    void findBySong() {
         List<RecordData> result = recordRepository.findBySong(instantList.get(0), instantList.get(2), 1);
 
         assertThat(List.of(
@@ -62,8 +57,8 @@ class RecordRepositoryTest {
     }
 
     @Test
-    void findByArtist() throws Exception {
-        List<RecordData> result = recordRepository.findByArtist(instantList.get(0), instantList.get(4), 1);
+    void findByArtist() {
+        List<RecordData> result = recordRepository.findByArtist(instantList.get(0), instantList.get(4), "artist");
 
         assertThat(List.of(
                 new RecordData(1, 100000, instantList.get(0)),
@@ -73,7 +68,7 @@ class RecordRepositoryTest {
     }
 
     @Test
-    void findByDate() throws Exception {
+    void findByDate() {
         List<RecordData> result = recordRepository.findByDate(instantList.get(0), Instant.parse("2020-03-10T00:00:00Z"));
 
         assertThat(List.of(
@@ -82,7 +77,7 @@ class RecordRepositoryTest {
     }
 
     @Test
-    void findFirstEntry() throws Exception {
+    void findFirstEntry() {
         RecordData result = recordRepository.findFirstEntry();
 
         assertThat(
@@ -91,7 +86,7 @@ class RecordRepositoryTest {
     }
 
     @Test
-    void findLastEntry() throws Exception {
+    void findLastEntry() {
         RecordData result = recordRepository.findLastEntry();
 
         assertThat(
@@ -100,7 +95,7 @@ class RecordRepositoryTest {
     }
 
     @Test
-    void findTopSongs() throws Exception {
+    void findTopSongs() {
         List<SongData> result = recordRepository.findTopSongs(instantList.get(0), instantList.get(2));
 
         assertThat(result).isEqualTo(List.of(
@@ -109,8 +104,8 @@ class RecordRepositoryTest {
     }
 
     @Test
-    void findTopSongsByArtist() throws Exception {
-        List<SongData> result = recordRepository.findTopSongsByArtist(instantList.get(0), instantList.get(2), 1);
+    void findTopSongsByArtist() {
+        List<SongData> result = recordRepository.findTopSongsByArtist(instantList.get(0), instantList.get(2), "artist");
 
         assertThat(result).isEqualTo(List.of(
                 new SongData(1, (long) 150000, (long) 2)
@@ -118,11 +113,11 @@ class RecordRepositoryTest {
     }
 
     @Test
-    void findTopArtists() throws Exception {
+    void findTopArtists() {
         List<ArtistData> result = recordRepository.findTopArtists(instantList.get(0), instantList.get(2));
 
         assertThat(result).isEqualTo(List.of(
-                new ArtistData(1, (long) 150000, (long) 2)
+                new ArtistData("artist", (long) 150000, (long) 2)
         ));
     }
 

@@ -22,15 +22,13 @@ public class Song {
 
     private String title;
 
-    @ManyToOne
-    @JoinColumn(name = "artist_id", nullable = false)
-    private Artist artist;
+    private String artist;
 
     @OneToMany(mappedBy = "song")
     @JsonIgnore
     private Set<Record> recordSet;
 
-    public Song(Integer songId, String title, Artist artist, Set<Record> recordSet) {
+    public Song(Integer songId, String title, String artist, Set<Record> recordSet) {
         this.songId = songId;
         this.title = title;
         this.artist = artist;
@@ -56,11 +54,11 @@ public class Song {
         this.title = title;
     }
 
-    public Artist getArtist() {
+    public String getArtist() {
         return artist;
     }
 
-    public void setArtist(Artist artist) {
+    public void setArtist(String artist) {
         this.artist = artist;
     }
 
